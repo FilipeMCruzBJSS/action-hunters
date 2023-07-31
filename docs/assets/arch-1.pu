@@ -1,0 +1,35 @@
+@startuml arch-1
+
+component "bid-service" as BIDS
+
+database "bids" as BIDS_TOPIC
+
+BIDS --> BIDS_TOPIC: stores bid\nevents
+
+component "recipe-service" as RECIPE
+
+database "recipe" as RECIPE_TOPIC
+
+RECIPE --> RECIPE_TOPIC: store final\ndeals
+
+BIDS_TOPIC -> RECIPE: updates bid\nevents
+
+component "product-service" as PRODUCT
+
+database "products" as PRODUCT_TOPIC
+
+PRODUCT --> PRODUCT_TOPIC: stores product\nevents
+
+RECIPE -> PRODUCT_TOPIC: updates products\nwith final deals
+
+component "info-service" as INFO
+
+BIDS_TOPIC --> INFO: updates\nbid events
+
+PRODUCT_TOPIC ---> INFO: updates products\nevents
+
+RECIPE_TOPIC --> INFO: updates final\ndeals events
+
+BIDS <-- PRODUCT_TOPIC: updates products\nevents
+
+@enduml
