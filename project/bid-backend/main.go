@@ -12,13 +12,9 @@ func main() {
 	p := NewProducer(cfg)
 	defer p.Close()
 
-	dto := BidDto{
-		ProductId: "bb",
-		Value:     "1.234",
-		BidderId:  "aa",
-	}
+	server := InitServer(p)
 
-	err := p.Send(dto)
+	err := server.Run(":8080")
 	if err != nil {
 		fmt.Printf("Failed to send event: %s\n", err)
 		os.Exit(1)

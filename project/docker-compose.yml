@@ -21,7 +21,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_INTERNAL://broker:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
@@ -30,7 +30,7 @@ services:
     container_name: kafka-ui
     image: provectuslabs/kafka-ui:latest
     ports:
-      - 8080:8080
+      - 8000:8080
     environment:
       DYNAMIC_CONFIG_ENABLED: 'true'
       KAFKA_CLUSTERS_0_NAME: local
@@ -43,9 +43,22 @@ services:
       - zookeeper
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                cub kafka-ready -b broker:29092 1 30 && \
-               kafka-topics --create --topic bids --partitions 1 --replication-factor 1 --bootstrap-server broker:29092 --config message.timestamp.type=LogAppendTime'"
-  # bid-service:
-  #   build:
-  #     context: bid-backend
-  #   ports:
-  #     - "9000:8080"
+               kafka-topics --create --topic bids --partitions 1 --replication-factor 1 --bootstrap-server broker:29092'"
+  bid-service:
+    build:
+      context: bid-backend
+    depends_on:
+      - broker
+      - zookeeper
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: broker:9092
+      GIN_MODE: release
+    ports:
+      - "9000:8080"
+  info-service:
+    build:
+      context: info-backend
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: broker:9092
+    ports:
+      - "9001:8080"

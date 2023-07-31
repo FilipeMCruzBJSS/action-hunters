@@ -46,7 +46,7 @@ func NewProducer(cfg Config) Producer {
 	}
 }
 
-func (p *Producer) Send(dto BidDto) error {
+func (p *Producer) Send(dto OutputBidDto) error {
 
 	message, err := json.Marshal(dto)
 	if err != nil {
