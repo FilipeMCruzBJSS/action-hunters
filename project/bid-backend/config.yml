@@ -3,4 +3,3 @@ kafka:
     servers: localhost:9092
   producer:
     topic: bids
-    

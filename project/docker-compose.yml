@@ -43,7 +43,7 @@ services:
       - zookeeper
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                cub kafka-ready -b broker:29092 1 30 && \
-               kafka-topics --create --topic bids --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server broker:29092'"
+               kafka-topics --create --topic bids --partitions 1 --replication-factor 1 --bootstrap-server broker:29092 --config message.timestamp.type=LogAppendTime'"
   # bid-service:
   #   build:
   #     context: bid-backend

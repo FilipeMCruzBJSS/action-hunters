@@ -61,7 +61,11 @@ func (p *Producer) Send(dto BidDto) error {
 		},
 		p.channel,
 	)
-	//p.inner.Flush(1000)
-    //p.inner.Close()
+
 	return err
+}
+
+func (p *Producer) Close() {
+	p.inner.Flush(1000)
+	p.inner.Close()
 }

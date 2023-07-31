@@ -10,9 +10,10 @@ var ConfigFile = "config.yml"
 func main() {
 	cfg := ReadConfig(ConfigFile)
 	p := NewProducer(cfg)
+	defer p.Close()
 
 	dto := BidDto{
-		ProductId: "aa",
+		ProductId: "bb",
 		Value:     "1.234",
 		BidderId:  "aa",
 	}
