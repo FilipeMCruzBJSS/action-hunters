@@ -1,0 +1,10 @@
+kafka:
+  bootstrap:
+    servers: localhost:9092
+  groupId: "auction-backend"
+  offsetReset: "earliest"
+  consumer:
+    bid:
+      topic: bids
+    product:
+      topic: products

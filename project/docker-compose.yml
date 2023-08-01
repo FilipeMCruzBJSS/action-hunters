@@ -43,7 +43,7 @@ services:
       - zookeeper
     command: "bash -c 'echo Waiting for Kafka to be ready... && \
                cub kafka-ready -b broker:29092 1 30 && \
-               kafka-topics --create --topic bids --partitions 1 --replication-factor 1 --bootstrap-server broker:29092 && \
+               kafka-topics --create --topic bids --partitions 1 --replication-factor 1 --bootstrap-server broker:29092 && \ kafka-topics --create --topic auctions --partitions 1 --replication-factor 1 --bootstrap-server broker:29092 && \
                kafka-topics --create --topic products --partitions 1 --replication-factor 1 --bootstrap-server broker:29092'"
   bid-service:
     build:
@@ -71,3 +71,8 @@ services:
       GIN_MODE: release
     ports:
       - "9002:8080"
+  auction-service:
+    build:
+      context: auction-backend
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: broker:9092
