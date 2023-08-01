@@ -10,10 +10,10 @@ import (
 type Config struct {
 	Kafka struct {
 		Bootstrap struct {
-			Servers string `yml:"servers" env:"KAFKA_BOOTSTRAP_SERVERS" env-default:"broker:9092"`
+			Servers string `yml:"servers" env:"KAFKA_BOOTSTRAP_SERVERS"`
 		} `yml:"bootstrap"`
 		Producer struct {
-			Topic string `yml:"topic" env:"PRODUCER_TOPIC" env-default:"products"`
+			Topic    string `yml:"topic" env:"PRODUCER_TOPIC"`
 		} `yml:"producer"`
 	} `yml:"kafka"`
 }

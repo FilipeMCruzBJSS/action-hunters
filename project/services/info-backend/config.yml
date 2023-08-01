@@ -1,8 +1,8 @@
 kafka:
   bootstrap:
-    servers: localhost:9092
-  groupId: "info-backend"
-  offsetReset: "earliest"
+    servers: broker:9092
+  group: info-backend
+  offset: earliest
   consumer:
     bid:
       topic: bids

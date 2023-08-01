@@ -10,18 +10,11 @@ import (
 type Config struct {
 	Kafka struct {
 		Bootstrap struct {
-			Servers string `yml:"servers" env:"KAFKA_BOOTSTRAP_SERVERS" env-default:"broker:9092"`
+			Servers string `yml:"servers" env:"KAFKA_BOOTSTRAP_SERVERS"`
 		} `yml:"bootstrap"`
-		GroupId         string `yml:"groupId" env:"KAFKA_GROUPID" env-default:"info-backend"`
-		AutoOffsetReset string `yml:"offsetReset" env:"KAFKA_AUTO_OFFSET_RESET" env-default:"earliest"`
-		Consumer        struct {
-			Bid struct {
-				Topic string `yml:"topic" env:"CONSUMER_BID_TOPIC" env-default:"bids"`
-			} `yml:"bid"`
-			Product struct {
-				Topic string `yml:"topic" env:"CONSUMER_PRODUCT_TOPIC" env-default:"products"`
-			} `yml:"product"`
-		} `yml:"consumer"`
+		Producer struct {
+			Topic string `yml:"topic" env:"PRODUCER_TOPIC"`
+		} `yml:"producer"`
 	} `yml:"kafka"`
 }
 
@@ -41,10 +34,7 @@ func ReadConfig(configFile string) Config {
 
 func (cfg *Config) ToKafkaConfig() kafka.ConfigMap {
 	m := make(map[string]kafka.ConfigValue)
-
 	m["bootstrap.servers"] = cfg.Kafka.Bootstrap.Servers
-	m["group.id"] = cfg.Kafka.GroupId
-	m["auto.offset.reset"] = cfg.Kafka.AutoOffsetReset
 
 	return m
 }
