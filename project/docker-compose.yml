@@ -62,3 +62,10 @@ services:
       KAFKA_BOOTSTRAP_SERVERS: broker:9092
     ports:
       - "9001:8080"
+  product-service:
+    build:
+      context: product-backend
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: broker:9092
+    ports:
+      - "9002:8080"

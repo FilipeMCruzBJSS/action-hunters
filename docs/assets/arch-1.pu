@@ -14,13 +14,17 @@ RECIPE --> RECIPE_TOPIC: store final\ndeals
 
 BIDS_TOPIC -> RECIPE: updates bid\nevents
 
+BIDS_TOPIC <- RECIPE: updates bid\nwith new state
+
 component "product-service" as PRODUCT
 
 database "products" as PRODUCT_TOPIC
 
 PRODUCT --> PRODUCT_TOPIC: stores product\nevents
 
-RECIPE -> PRODUCT_TOPIC: updates products\nwith final deals
+RECIPE -> PRODUCT_TOPIC: updates products\nwith new state
+
+RECIPE <- PRODUCT_TOPIC: updates products\nevents
 
 component "info-service" as INFO
 
@@ -30,6 +34,5 @@ PRODUCT_TOPIC ---> INFO: updates products\nevents
 
 RECIPE_TOPIC --> INFO: updates final\ndeals events
 
-BIDS <-- PRODUCT_TOPIC: updates products\nevents
 
 @enduml
