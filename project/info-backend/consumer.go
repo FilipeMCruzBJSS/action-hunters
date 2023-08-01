@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"os"
@@ -11,9 +12,10 @@ import (
 )
 
 type Consumer struct {
-	inner   *kafka.Consumer
-	topic   string
-	channel chan kafka.Event
+	inner        *kafka.Consumer
+	bidTopic     string
+	productTopic string
+	channel      chan kafka.Event
 }
 
 func NewConsumer(cfg Config) Consumer {
@@ -26,15 +28,16 @@ func NewConsumer(cfg Config) Consumer {
 		os.Exit(1)
 	}
 	return Consumer{
-		topic: cfg.Kafka.Consumer.Bid.Topic,
-		inner: c,
+		bidTopic:     cfg.Kafka.Consumer.Bid.Topic,
+		productTopic: cfg.Kafka.Consumer.Product.Topic,
+		inner:        c,
 	}
 }
 
 func (c *Consumer) Subscribe() {
-	err := c.inner.SubscribeTopics([]string{c.topic}, nil)
+	err := c.inner.SubscribeTopics([]string{c.bidTopic, c.productTopic}, nil)
 	if err != nil {
-		fmt.Printf("Failed to subscribe to topic: %s\n", err)
+		fmt.Printf("Failed to subscribe to topics: %s\n", err)
 		os.Exit(1)
 	}
 	// Set up a channel for handling Ctrl-C, etc
@@ -53,8 +56,10 @@ func (c *Consumer) Subscribe() {
 				// Errors are informational and automatically handled by the consumer
 				continue
 			}
-
-			dto := convert(ev)
+			dto, err := c.read(ev)
+			if err != nil {
+				return
+			}
 
 			val, err := json.Marshal(dto)
 			if err != nil {
@@ -71,16 +76,41 @@ func (c *Consumer) Close() {
 	_ = c.inner.Close()
 }
 
-func convert(event *kafka.Message) BidDto {
+func (c *Consumer) read(event *kafka.Message) (interface{}, error) {
+	if *event.TopicPartition.Topic == c.bidTopic {
+		return readBid(event)
+	} else if *event.TopicPartition.Topic == c.productTopic {
+		return readProduct(event)
+	} else {
+		fmt.Printf("Failed to consume message: unknown topic")
+		return nil, errors.New("unknown topic")
+	}
+}
+
+func readBid(event *kafka.Message) (BidDto, error) {
 	var dto BidDto
 
 	err := json.Unmarshal(event.Value, &dto)
 	if err != nil {
 		fmt.Printf("Failed to consume message: %s\n", err)
-		os.Exit(1)
+		return BidDto{}, nil
 	}
 
 	dto.TimeStamp = event.Timestamp.String()
 
-	return dto
+	return dto, nil
+}
+
+func readProduct(event *kafka.Message) (ProductDto, error) {
+	var dto ProductDto
+
+	err := json.Unmarshal(event.Value, &dto)
+	if err != nil {
+		fmt.Printf("Failed to consume message: %s\n", err)
+		return ProductDto{}, nil
+	}
+
+	dto.TimeStamp = event.Timestamp.String()
+
+	return dto, nil
 }

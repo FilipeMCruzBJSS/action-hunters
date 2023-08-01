@@ -18,6 +18,9 @@ type Config struct {
 			Bid struct {
 				Topic string `yml:"topic" env:"CONSUMER_BID_TOPIC" env-default:"bids"`
 			} `yml:"bid"`
+			Product struct {
+				Topic string `yml:"topic" env:"CONSUMER_PRODUCT_TOPIC" env-default:"products"`
+			} `yml:"product"`
 		} `yml:"consumer"`
 	} `yml:"kafka"`
 }

@@ -6,4 +6,5 @@ kafka:
   consumer:
     bid:
       topic: bids
-    
+    product:
+      topic: products
