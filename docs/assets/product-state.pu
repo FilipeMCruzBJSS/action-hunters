@@ -1,0 +1,13 @@
+
+@startuml product-state
+
+hide empty description
+
+[*] --> Submitted: owner submits\nthe product
+Submitted --> Cancelled: owner cancels\nauction
+Submitted -> BidsPlaced: first bid\nis placed
+BidsPlaced --> AuctionDone: no new bids\nare placed
+AuctionDone --> [*]
+Cancelled --> [*]
+
+@enduml

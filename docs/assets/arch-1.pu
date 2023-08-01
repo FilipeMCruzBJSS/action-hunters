@@ -6,15 +6,15 @@ database "bids" as BIDS_TOPIC
 
 BIDS --> BIDS_TOPIC: stores bid\nevents
 
-component "recipe-service" as RECIPE
+component "auction-service" as AUCTION
 
-database "recipe" as RECIPE_TOPIC
+database "auction" as AUCTION_TOPIC
 
-RECIPE --> RECIPE_TOPIC: store final\ndeals
+AUCTION --> AUCTION_TOPIC: store final\ndeals
 
-BIDS_TOPIC -> RECIPE: updates bid\nevents
+BIDS_TOPIC -> AUCTION: updates bid\nevents
 
-BIDS_TOPIC <- RECIPE: updates bid\nwith new state
+BIDS_TOPIC <- AUCTION: updates bid\nwith new state
 
 component "product-service" as PRODUCT
 
@@ -22,9 +22,9 @@ database "products" as PRODUCT_TOPIC
 
 PRODUCT --> PRODUCT_TOPIC: stores product\nevents
 
-RECIPE -> PRODUCT_TOPIC: updates products\nwith new state
+AUCTION -> PRODUCT_TOPIC: updates products\nwith new state
 
-RECIPE <- PRODUCT_TOPIC: updates products\nevents
+AUCTION <- PRODUCT_TOPIC: updates products\nevents
 
 component "info-service" as INFO
 
@@ -32,7 +32,7 @@ BIDS_TOPIC --> INFO: updates\nbid events
 
 PRODUCT_TOPIC ---> INFO: updates products\nevents
 
-RECIPE_TOPIC --> INFO: updates final\ndeals events
+AUCTION_TOPIC --> INFO: updates final\ndeals events
 
 
 @enduml
