@@ -16,7 +16,7 @@ func main() {
 
 	err := server.Run(":8080")
 	if err != nil {
-		fmt.Printf("Failed to send event: %s\n", err)
+		fmt.Printf("Server Error: %s\n", err)
 		os.Exit(1)
 	}
 }

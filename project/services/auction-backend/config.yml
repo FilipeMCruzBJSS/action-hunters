@@ -3,8 +3,7 @@ kafka:
     servers: broker:9092
   group: auction-backend
   offset: earliest
-  consumer:
-    bid:
-      topic: bids
-    product:
-      topic: products
+  topics:
+    bid: bids
+    auction: auctions
+    product: products

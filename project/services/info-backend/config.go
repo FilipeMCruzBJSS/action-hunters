@@ -12,16 +12,13 @@ type Config struct {
 		Bootstrap struct {
 			Servers string `yml:"servers" env:"KAFKA_BOOTSTRAP_SERVERS"`
 		} `yml:"bootstrap"`
-		Group    string `yml:"group" env:"KAFKA_GROUPID"`
-		Offset   string `yml:"offset" env:"KAFKA_AUTO_OFFSET_RESET"`
-		Consumer struct {
-			Bid struct {
-				Topic string `yml:"topic" env:"CONSUMER_BID_TOPIC"`
-			} `yml:"bid"`
-			Product struct {
-				Topic string `yml:"topic" env:"CONSUMER_PRODUCT_TOPIC"`
-			} `yml:"product"`
-		} `yml:"consumer"`
+		Group  string `yml:"group" env:"KAFKA_GROUPID"`
+		Offset string `yml:"offset" env:"KAFKA_AUTO_OFFSET_RESET"`
+		Topics struct {
+			Bid     string `yml:"bid" env:"BID_TOPIC"`
+			Auction string `yml:"auction" env:"AUCTION_TOPIC"`
+			Product string `yml:"product" env:"PRODUCT_TOPIC"`
+		} `yml:"topics"`
 	} `yml:"kafka"`
 }
 

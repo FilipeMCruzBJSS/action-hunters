@@ -11,4 +11,5 @@ type OutputBidDto struct {
 	Value     string `json:"value"`
 	BidderId  string `json:"bidder_id"`
 	BidId     string `json:"bid_id"`
+	TimeStamp int64  `json:"timestamp"`
 }

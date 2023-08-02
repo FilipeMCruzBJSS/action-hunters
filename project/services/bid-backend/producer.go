@@ -41,7 +41,7 @@ func NewProducer(cfg Config) Producer {
 
 	return Producer{
 		inner:   p,
-		topic:   cfg.Kafka.Producer.Topic,
+		topic:   cfg.Kafka.Topics.Bid,
 		channel: deliveryChan,
 	}
 }
@@ -57,7 +57,6 @@ func (p *Producer) Send(dto OutputBidDto) error {
 		&kafka.Message{
 			TopicPartition: kafka.TopicPartition{Topic: &p.topic, Partition: kafka.PartitionAny},
 			Value:          message,
-			Key:            []byte(dto.ProductId),
 		},
 		p.channel,
 	)

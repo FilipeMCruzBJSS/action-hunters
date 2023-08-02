@@ -5,7 +5,7 @@ type BidDto struct {
 	Value     string `json:"value"`
 	BidderId  string `json:"bidder_id"`
 	BidId     string `json:"bid_id"`
-	TimeStamp string `json:"timestamp"`
+	TimeStamp int64  `json:"timeStamp"`
 }
 
 type ProductDto struct {
@@ -14,7 +14,8 @@ type ProductDto struct {
 	OwnerId       string `json:"owner_id"`
 	Description   string `json:"description"`
 	State         string `json:"state"`
-	TimeStamp     string `json:"timestamp"`
+	TimeStamp     int64  `json:"timeStamp"`
+	WaitDuration  int64  `json:"wait_duration"`
 }
 
 const (
@@ -25,6 +26,6 @@ const (
 )
 
 type AuctionDto struct {
-	product ProductDto
-	lastBid BidDto
+	Product ProductDto `json:"product"`
+	LastBid BidDto     `json:"last_id"`
 }

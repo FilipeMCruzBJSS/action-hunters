@@ -12,9 +12,9 @@ type Config struct {
 		Bootstrap struct {
 			Servers string `yml:"servers" env:"KAFKA_BOOTSTRAP_SERVERS"`
 		} `yml:"bootstrap"`
-		Producer struct {
-			Topic    string `yml:"topic" env:"PRODUCER_TOPIC"`
-		} `yml:"producer"`
+		Topics struct {
+			Bid string `yml:"bid" env:"BID_TOPIC"`
+		} `yml:"topics"`
 	} `yml:"kafka"`
 }
 

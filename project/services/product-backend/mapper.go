@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"strconv"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -32,5 +33,7 @@ func Verify(dto InputProductDto) (OutputProductDto, error) {
 		OwnerId:       dto.OwnerId,
 		Description:   dto.Description,
 		State:         StateSubmitted,
+		WaitDuration:  300,
+		TimeStamp:     time.Now().Unix(),
 	}, nil
 }

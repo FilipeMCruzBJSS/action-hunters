@@ -41,7 +41,7 @@ func NewProducer(cfg Config) Producer {
 
 	return Producer{
 		inner:   p,
-		topic:   cfg.Kafka.Producer.Topic,
+		topic:   cfg.Kafka.Topics.Product,
 		channel: deliveryChan,
 	}
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"strconv"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -31,5 +32,6 @@ func Verify(dto InputBidDto) (OutputBidDto, error) {
 		Value:     dto.Value,
 		BidderId:  dto.BidderId,
 		BidId:     uuid.New().String(),
+		TimeStamp: time.Now().Unix(),
 	}, nil
 }

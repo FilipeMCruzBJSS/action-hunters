@@ -27,12 +27,15 @@ func NewConsumer(cfg Config, store *Store) *Consumer {
 		fmt.Printf("Failed to create consumer: %s\n", err)
 		os.Exit(1)
 	}
-	return &Consumer{
-		bidTopic:     cfg.Kafka.Consumer.Bid.Topic,
-		productTopic: cfg.Kafka.Consumer.Product.Topic,
+
+	consumer := &Consumer{
+		bidTopic:     cfg.Kafka.Topics.Bid,
+		productTopic: cfg.Kafka.Topics.Product,
 		inner:        c,
 		store:        store,
 	}
+
+	return consumer
 }
 
 func (c *Consumer) Subscribe() {
@@ -59,12 +62,12 @@ func (c *Consumer) Subscribe() {
 			}
 			dto, err := c.process(ev)
 			if err != nil {
-				fmt.Printf("Error prcessing event: %s\n", err)
+				continue
 			}
 
 			val, err := json.Marshal(dto)
 			if err != nil {
-				fmt.Printf("Error marsheling event: %s\n", err)
+				continue
 			}
 
 			fmt.Printf("Consumed event from topic %s: key = %-10s value = %s\n",
@@ -78,56 +81,25 @@ func (c *Consumer) Close() {
 }
 
 func (c *Consumer) process(event *kafka.Message) (interface{}, error) {
-	if *event.TopicPartition.Topic == c.bidTopic {
-		dto, err := readBid(event)
+	switch *event.TopicPartition.Topic {
+	case c.bidTopic:
+		var dto BidDto
+		err := json.Unmarshal(event.Value, &dto)
 		if err != nil {
+			fmt.Printf("Failed to consume message: %s\n", err)
 			return dto, err
 		}
-		err = c.store.TryProcess(dto)
+		return dto, c.store.TryProcess(dto)
+	case c.productTopic:
+		var dto ProductDto
+		err := json.Unmarshal(event.Value, &dto)
 		if err != nil {
+			fmt.Printf("Failed to consume message: %s\n", err)
 			return dto, err
 		}
-		return dto, nil
-	} else if *event.TopicPartition.Topic == c.productTopic {
-		dto, err := readProduct(event)
-		if err != nil {
-			return dto, err
-		}
-		err = c.store.Store(dto)
-		if err != nil {
-			return dto, err
-		}
-		return dto, nil
-	} else {
+		return dto, c.store.Store(dto)
+	default:
 		fmt.Printf("Failed to consume message: unknown topic")
 		return nil, errors.New("unknown topic")
 	}
-}
-
-func readBid(event *kafka.Message) (BidDto, error) {
-	var dto BidDto
-
-	err := json.Unmarshal(event.Value, &dto)
-	if err != nil {
-		fmt.Printf("Failed to consume message: %s\n", err)
-		return BidDto{}, nil
-	}
-
-	dto.TimeStamp = event.Timestamp.String()
-
-	return dto, nil
-}
-
-func readProduct(event *kafka.Message) (ProductDto, error) {
-	var dto ProductDto
-
-	err := json.Unmarshal(event.Value, &dto)
-	if err != nil {
-		fmt.Printf("Failed to consume message: %s\n", err)
-		return ProductDto{}, nil
-	}
-
-	dto.TimeStamp = event.Timestamp.String()
-
-	return dto, nil
 }
