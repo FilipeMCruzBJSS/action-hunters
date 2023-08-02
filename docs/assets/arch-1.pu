@@ -14,8 +14,6 @@ AUCTION --> AUCTION_TOPIC: store final\ndeals
 
 BIDS_TOPIC -> AUCTION: updates bid\nevents
 
-BIDS_TOPIC <- AUCTION: updates bid\nwith new state
-
 component "product-service" as PRODUCT
 
 database "products" as PRODUCT_TOPIC
